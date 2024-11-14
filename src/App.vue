@@ -13,7 +13,7 @@
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
-  <Button class="bg-red-500" label="Click" />
+  <Button class="!bg-blue-500" label="Click" />
 </template>
 
 <style scoped>
