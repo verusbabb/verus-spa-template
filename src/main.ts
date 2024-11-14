@@ -6,9 +6,10 @@ import Material from "@primevue/themes/material";
 
 const app = createApp(App);
 app.use(PrimeVue, {
-  theme: {
-    preset: Material,
-  },
+  unstyled: true,
+  // theme: {
+  //   preset: Material,
+  // },
 });
 
 app.mount("#app");
