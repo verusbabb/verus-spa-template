@@ -1,21 +1,13 @@
 <script setup lang="ts">
-  import HelloWorld from "./components/HelloWorld.vue";
-  import Button from "primevue/button";
   import Header from "./components/Header.vue";
+  import Login from "./components/Login.vue";
 </script>
 
 <template>
   <div>
     <Header />
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <Login />
   </div>
-  <HelloWorld msg="Vite + Vue" />
-  <Button class="!bg-blue-500" label="Click" />
 </template>
 
 <style scoped>
