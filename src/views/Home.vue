@@ -22,12 +22,8 @@
         </div>
       </div>
     </div>
-    <div class="flex-1 pt-8 overflow-hidden">
-      <img
-        src="/tom.png"
-        alt="hero-1"
-        class="h-full w-full lg:[clip-path:polygon(100%,100%_0%,100%_100%,0_100%)]"
-      />
+    <div class="flex-1 pr-8 rounded-2xl overflow-hidden p-8">
+      <img src="/tom.png" alt="hero-1" class="h-full w-full rounded-2xl" />
     </div>
   </div>
 </template>
