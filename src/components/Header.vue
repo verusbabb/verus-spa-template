@@ -57,24 +57,25 @@
       badge: 3,
       items: [
         {
-          label: "Core",
+          label: "Some Project",
           icon: "pi pi-bolt",
           shortcut: "⌘+S",
         },
         {
-          label: "Blocks",
+          label: "Another Project",
           icon: "pi pi-server",
           shortcut: "⌘+B",
         },
         {
-          separator: true,
-        },
-        {
-          label: "UI Kit",
+          label: "Yet Another",
           icon: "pi pi-pencil",
           shortcut: "⌘+U",
         },
       ],
+    },
+    {
+      label: "About",
+      icon: "pi pi-info",
     },
   ]);
 </script>

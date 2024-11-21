@@ -5,9 +5,8 @@
         <h1
           class="text-3xl lg:text-5xl font-bold text-surface-900 dark:text-surface-0 mb-4 lg:leading-normal text-center lg:text-left"
         >
-          Create the screens your <br /><span
-            class="text-blue-500 dark:text-blue-400"
-            >visitors deserve to see</span
+          Some page content <br /><span class="text-blue-500 dark:text-blue-400"
+            >that visitors will see</span
           >
         </h1>
         <p
