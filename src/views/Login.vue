@@ -5,28 +5,50 @@
     >
       <div class="text-4xl font-medium mb-12 text-black">Welcome</div>
       <InputText
+        v-model="email"
         type="text"
         class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
         placeholder="Email"
       />
       <InputText
-        type="text"
+        v-model="password"
+        type="password"
         class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
         placeholder="Password"
       />
-      <button
-        type="button"
-        class="max-w-40 !appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
-      >
+      <Button @click="handleLogin" type="button" variant="text">
         Sign In
-      </button>
+      </Button>
       <a
         class="cursor-pointer font-medium block text-center text-primary-contrast"
         >Forgot Password?</a
       >
+      <p v-if="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</p>
     </div>
   </div>
 </template>
+
 <script setup>
+  import { ref } from "vue";
+  import { storeToRefs } from "pinia";
   import InputText from "primevue/inputtext";
+  import axios from "axios";
+  import { useAuthStore } from "../store/auth/index";
+  import { useRouter } from "vue-router";
+  import Button from "primevue/button";
+
+  const router = useRouter();
+  const authStore = useAuthStore();
+  const { isLoggedIn } = storeToRefs(authStore);
+  const email = ref("");
+  const password = ref("");
+
+  const handleLogin = () => {
+    authStore.login(email.value, password.value);
+    if (isLoggedIn) {
+      router.push("/");
+    } else {
+      console.log("not authenticated");
+    }
+  };
 </script>

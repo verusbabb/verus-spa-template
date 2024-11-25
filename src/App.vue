@@ -1,12 +1,16 @@
 <script setup lang="ts">
   import Header from "./components/Header.vue";
-  import Home from "./views/Home.vue";
+  import { RouterView } from "vue-router";
+  import { useAuthStore } from "./store/auth";
+
+  const authStore = useAuthStore();
+  authStore.init();
 </script>
 
 <template>
   <div>
     <Header />
-    <Home />
+    <RouterView />
     <!-- <Login /> -->
   </div>
 </template>
