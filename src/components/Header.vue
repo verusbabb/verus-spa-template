@@ -65,11 +65,52 @@
           <Button
             v-if="!isLoggedIn"
             label="Login"
-            @click="login"
+            @click="visible = true"
             severity="secondary"
             variant="text"
           />
-          <Button v-else label="Logout" @click="logout" severity="secondary" />
+          <Button
+            v-if="isLoggedIn"
+            label="Logout"
+            @click="handleLogout"
+            severity="secondary"
+            variant="text"
+          />
+          <Dialog v-model:visible="visible" modal>
+            <div>
+              <form @submit.prevent="handleLogin">
+                <div
+                  class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
+                >
+                  <div class="text-4xl font-medium mb-12 text-black">
+                    Welcome
+                  </div>
+                  <InputText
+                    v-model="email"
+                    type="text"
+                    class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+                    placeholder="Email"
+                  />
+                  <InputText
+                    v-model="password"
+                    type="password"
+                    class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+                    placeholder="Password"
+                  />
+                  <Button type="submit" variant="text" severity="secondary">
+                    Sign In
+                  </Button>
+                  <a
+                    class="cursor-pointer font-medium block text-center text-primary-contrast"
+                    >Forgot Password?</a
+                  >
+                  <p v-if="errorMessage" class="text-red-500 mt-4">
+                    {{ errorMessage }}
+                  </p>
+                </div>
+              </form>
+            </div>
+          </Dialog>
         </div>
       </template>
     </Menubar>
@@ -78,14 +119,34 @@
 
 <script setup>
   import { ref } from "vue";
-  import { Badge, Menubar, Button, InputText } from "primevue";
+  import { Badge, Menubar, Button, InputText, Dialog } from "primevue";
   import { useRouter } from "vue-router";
   import { useAuthStore } from "../store/auth";
   import { storeToRefs } from "pinia";
+
+  const visible = ref(false);
+
   const router = useRouter();
   const authStore = useAuthStore();
-
   const { isLoggedIn } = storeToRefs(authStore);
+  const email = ref("");
+  const password = ref("");
+
+  const handleLogin = async () => {
+    await authStore.login(email.value, password.value);
+    if (isLoggedIn.value) {
+      visible.value = false;
+      router.push("/");
+    } else {
+      console.log("not authenticated");
+    }
+  };
+
+  const handleLogout = () => {
+    authStore.logout();
+    alert("Logged out");
+    router.push("/");
+  };
 
   const items = ref([
     {
