@@ -76,40 +76,50 @@
             severity="secondary"
             variant="text"
           />
+
           <Dialog v-model:visible="visible" modal>
-            <div>
-              <form @submit.prevent="handleLogin">
-                <div
-                  class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
+            <Form v-slot="$form" :initialValues :resolver @submit="handleLogin">
+              <div
+                class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
+              >
+                <div class="text-4xl font-medium mb-12 text-black">Welcome</div>
+                <InputText
+                  v-model="email"
+                  type="text"
+                  class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+                  placeholder="Email"
+                />
+                <Message
+                  v-if="$form.email?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                  >{{ $form.email.error?.message }}</Message
                 >
-                  <div class="text-4xl font-medium mb-12 text-black">
-                    Welcome
-                  </div>
-                  <InputText
-                    v-model="email"
-                    type="text"
-                    class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
-                    placeholder="Email"
-                  />
-                  <InputText
-                    v-model="password"
-                    type="password"
-                    class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
-                    placeholder="Password"
-                  />
-                  <Button type="submit" variant="text" severity="secondary">
-                    Sign In
-                  </Button>
-                  <a
-                    class="cursor-pointer font-medium block text-center text-primary-contrast"
-                    >Forgot Password?</a
-                  >
-                  <p v-if="errorMessage" class="text-red-500 mt-4">
-                    {{ errorMessage }}
-                  </p>
-                </div>
-              </form>
-            </div>
+
+                <InputText
+                  v-model="password"
+                  type="password"
+                  class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+                  placeholder="Password"
+                />
+                <Message
+                  v-if="$form.password?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                  >{{ $form.password.error?.message }}</Message
+                >
+
+                <Button type="submit" variant="text" severity="secondary">
+                  Sign In
+                </Button>
+                <a
+                  class="cursor-pointer font-medium block text-center text-primary-contrast"
+                  >Forgot Password?</a
+                >
+              </div>
+            </Form>
           </Dialog>
         </div>
       </template>
@@ -118,8 +128,19 @@
 </template>
 
 <script setup>
-  import { ref } from "vue";
-  import { Badge, Menubar, Button, InputText, Dialog } from "primevue";
+  import { ref, reactive } from "vue";
+  import {
+    Badge,
+    Menubar,
+    Button,
+    InputText,
+    Dialog,
+    Message,
+    // Toast,
+  } from "primevue";
+  // import Toast from "primevue/toast";
+  import { Form } from "@primevue/forms";
+  // import { useToast } from "primevue/usetoast";
   import { useRouter } from "vue-router";
   import { useAuthStore } from "../store/auth";
   import { storeToRefs } from "pinia";
@@ -132,9 +153,39 @@
   const email = ref("");
   const password = ref("");
 
+  // const toast = useToast();
+
+  const initialValues = reactive({
+    email: "",
+    password: "",
+  });
+
+  const resolver = ({ values }) => {
+    const errors = {};
+
+    if (!values.email) {
+      errors.email = [{ message: "Email is required." }];
+    }
+    if (!values.password) {
+      errors.password = [{ message: "Password is required." }];
+    }
+
+    return {
+      errors,
+    };
+  };
+
   const handleLogin = async () => {
     await authStore.login(email.value, password.value);
     if (isLoggedIn.value) {
+      // toast.add({
+      //   severity: "info",
+      //   summary: "Info Message",
+      //   detail: "Message Content",
+      //   group: "tl",
+      //   life: 3000,
+      // });
+
       visible.value = false;
       router.push("/");
     } else {
