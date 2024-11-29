@@ -19,10 +19,11 @@ app.use(PrimeVue, {
     },
   },
 });
+app.use(ToastService);
 app.directive("ripple", Ripple);
 app.use(router);
 app.use(pinia);
-app.use(ToastService);
+
 app.mount("#app");
 
 // @layer tailwind-base, primevue, tailwind-utilities;
