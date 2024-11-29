@@ -214,6 +214,8 @@
 
       if (isAuthenticated.value) {
         visible.value = false;
+        email.value = "";
+        password.value = "";
         router.push("/");
         toast.add({
           severity: "success",
