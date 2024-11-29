@@ -2,11 +2,14 @@
   <div class="card">
     <Menubar :model="items">
       <template #start>
-        <img
+        <!-- <img
           src="/veruslogo.png"
           alt="Verus Logo"
           class="h-10 w-auto bg-white"
-        />
+        /> -->
+        <div class="text-2xl font-bold mr-4">
+          History | <span class="text-indigo-500">According to Joel</span>
+        </div>
       </template>
       <template #item="{ item, props, hasSubmenu, root }">
         <!-- Use router-link and preserve styling -->
@@ -82,7 +85,9 @@
               <div
                 class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
               >
-                <div class="text-4xl font-medium mb-12 text-black">Welcome</div>
+                <div class="text-4xl font-medium mb-12 mt-4 text-gray-900">
+                  Welcome
+                </div>
                 <InputText
                   v-model="email"
                   type="text"
@@ -110,14 +115,23 @@
                   variant="simple"
                   >{{ $form.password.error?.message }}</Message
                 >
-
-                <Button type="submit" variant="text" severity="secondary">
-                  Sign In
-                </Button>
-                <a
-                  class="cursor-pointer font-medium block text-center text-primary-contrast"
-                  >Forgot Password?</a
-                >
+                <div class="flex flex-col items-center justify-center">
+                  <Button type="submit" variant="text" severity="secondary">
+                    Sign In
+                  </Button>
+                  <div
+                    class="text-md text-gray-900 font-bold dark:text-surface-200 mt-4"
+                  >
+                    New User?
+                  </div>
+                  <Button
+                    @click="handleCreateAccount"
+                    variant="text"
+                    severity="secondary"
+                  >
+                    Create Account
+                  </Button>
+                </div>
               </div>
             </Form>
           </Dialog>
@@ -178,14 +192,6 @@
   const handleLogin = async () => {
     await authStore.login(email.value, password.value);
     if (isLoggedIn.value) {
-      // toast.add({
-      //   severity: "info",
-      //   summary: "Info Message",
-      //   detail: "Message Content",
-      //   group: "tl",
-      //   life: 3000,
-      // });
-
       visible.value = false;
       router.push("/");
     } else {
@@ -199,37 +205,40 @@
     router.push("/");
   };
 
+  const handleCreateAccount = () => {
+    alert("Create Account");
+  };
+
   const items = ref([
     {
-      label: "Home",
-      icon: "pi pi-home mr-2",
-      routerLink: "/",
-    },
-    {
-      label: "Projects",
-      icon: "pi pi-search",
+      label: "Lessons",
+      icon: "pi pi-graduation-cap",
       badge: 3,
       items: [
         {
           label: "Some Project",
-          icon: "pi pi-bolt",
-          shortcut: "⌘+S",
+          icon: "pi pi-video",
+          // shortcut: "⌘+S",
         },
         {
           label: "Another Project",
-          icon: "pi pi-server",
-          shortcut: "⌘+B",
+          icon: "pi pi-video",
+          // shortcut: "⌘+B",
         },
         {
           label: "Yet Another",
-          icon: "pi pi-pencil",
-          shortcut: "⌘+U",
+          icon: "pi pi-video",
+          // shortcut: "⌘+U",
         },
       ],
     },
     {
-      label: "Profile",
-      icon: "pi pi-user",
+      label: "Posts",
+      icon: "pi pi-pencil",
+    },
+    {
+      label: "Ask Joel",
+      icon: "pi pi-question-circle",
     },
   ]);
 

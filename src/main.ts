@@ -15,7 +15,7 @@ app.use(PrimeVue, {
   theme: {
     preset: Material,
     options: {
-      darkModeSelector: false || "none",
+      darkModeSelector: "false",
     },
   },
 });

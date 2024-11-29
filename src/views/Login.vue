@@ -19,10 +19,9 @@
       <Button @click="handleLogin" type="button" variant="text">
         Sign In
       </Button>
-      <a
-        class="cursor-pointer font-medium block text-center text-primary-contrast"
-        >Forgot Password?</a
-      >
+      <Button @click="handleCreateAccount" type="button" variant="text">
+        Create Account
+      </Button>
       <p v-if="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</p>
     </div>
   </div>

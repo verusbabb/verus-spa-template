@@ -5,8 +5,8 @@
         <h1
           class="text-3xl lg:text-5xl font-bold text-surface-900 dark:text-surface-0 mb-4 lg:leading-normal text-center lg:text-left"
         >
-          Some page content <br /><span class="text-blue-500 dark:text-blue-400"
-            >that visitors will see</span
+          Your best future <br /><span class="text-blue-500 dark:text-blue-400"
+            >starts with knowing the past</span
           >
         </h1>
         <p
@@ -21,8 +21,12 @@
         </div>
       </div>
     </div>
-    <div class="flex-1 pr-8 rounded-2xl overflow-hidden p-8">
-      <img src="/tom.png" alt="hero-1" class="h-full w-full rounded-2xl" />
+    <div class="flex-1 pt-8 overflow-hidden">
+      <img
+        src="/tom.png"
+        alt="hero-1"
+        class="h-full w-full lg:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0_100%)]"
+      />
     </div>
   </div>
 </template>
