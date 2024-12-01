@@ -90,6 +90,7 @@
             <Dialog
               v-model:visible="visible"
               @show="selectedSchema = 'userLoginSchema'"
+              @hide="clearLoginValues"
               class="!bg-gray-200"
               modal
             >
@@ -170,6 +171,7 @@
     <Dialog
       v-model:visible="createAccountVisible"
       @show="selectedSchema = 'userCreateAccountSchema'"
+      @hide="clearCreateAccountValues"
       class="!bg-gray-200"
       modal
     >
@@ -511,5 +513,18 @@
   const logout = () => {
     authStore.logout();
     router.push("/");
+  };
+
+  const clearLoginValues = () => {
+    initialValues.email = "";
+    initialValues.password = "";
+  };
+
+  const clearCreateAccountValues = () => {
+    initialValues.newEmail = "";
+    initialValues.newPassword = "";
+    initialValues.confirmPassword = "";
+    initialValues.newFirstName = "";
+    initialValues.newLastName = "";
   };
 </script>
