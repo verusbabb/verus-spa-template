@@ -109,7 +109,10 @@
                     v-model="initialValues.email"
                     name="email"
                     type="text"
-                    class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+                    :class="[
+                      '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !bg-white/10 !text-primary-contrast/70 !rounded-full',
+                      { '!mb-6': !$form.email?.invalid },
+                    ]"
                     placeholder="Email"
                   />
                   <Message
@@ -117,6 +120,7 @@
                     severity="error"
                     size="small"
                     variant="simple"
+                    class="!mb-6"
                     >{{ $form.email.error?.message }}</Message
                   >
 
@@ -124,7 +128,10 @@
                     v-model="initialValues.password"
                     name="password"
                     type="password"
-                    class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+                    :class="[
+                      '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !bg-white/10 !text-primary-contrast/70 !rounded-full',
+                      { '!mb-6': !$form.password?.invalid },
+                    ]"
                     placeholder="Password"
                   />
                   <Message
@@ -132,6 +139,7 @@
                     severity="error"
                     size="small"
                     variant="simple"
+                    class="!mb-6"
                     >{{ $form.password.error?.message }}</Message
                   >
                   <div class="flex flex-col items-center justify-center">
@@ -181,7 +189,10 @@
             v-model="initialValues.newFirstName"
             name="newFirstName"
             type="text"
-            class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+            :class="[
+              '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !bg-white/10 !text-primary-contrast/70 !rounded-full',
+              { '!mb-6': !$form.newFirstName?.invalid },
+            ]"
             placeholder="First Name"
           />
           <Message
@@ -189,13 +200,17 @@
             severity="error"
             size="small"
             variant="simple"
+            class="!mb-6"
             >{{ $form.newFirstName.error?.message }}</Message
           >
           <InputText
             v-model="initialValues.newLastName"
             name="newLastName"
             type="text"
-            class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+            :class="[
+              '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !bg-white/10 !text-primary-contrast/70 !rounded-full',
+              { '!mb-6': !$form.newLastName?.invalid },
+            ]"
             placeholder="Last Name"
           />
           <Message
@@ -203,13 +218,17 @@
             severity="error"
             size="small"
             variant="simple"
+            class="!mb-6"
             >{{ $form.newLastName.error?.message }}</Message
           >
           <InputText
             v-model="initialValues.newEmail"
             name="newEmail"
             type="email"
-            class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+            :class="[
+              '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !bg-white/10 !text-primary-contrast/70 !rounded-full',
+              { '!mb-6': !$form.newEmail?.invalid },
+            ]"
             placeholder="Email"
           />
           <Message
@@ -217,13 +236,17 @@
             severity="error"
             size="small"
             variant="simple"
+            class="!mb-6"
             >{{ $form.newEmail.error?.message }}</Message
           >
           <InputText
             v-model="initialValues.newPassword"
             name="newPassword"
             type="password"
-            class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+            :class="[
+              '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !bg-white/10 !text-primary-contrast/70 !rounded-full',
+              { '!mb-6': !$form.newPassword?.invalid },
+            ]"
             placeholder="Password"
           />
           <Message
@@ -231,13 +254,17 @@
             severity="error"
             size="small"
             variant="simple"
+            class="!mb-6"
             >{{ $form.newPassword.error?.message }}</Message
           >
           <InputText
             v-model="initialValues.confirmPassword"
             name="confirmPassword"
             type="password"
-            class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
+            :class="[
+              '!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !bg-white/10 !text-primary-contrast/70 !rounded-full',
+              { '!mb-6': !$form.confirmPassword?.invalid },
+            ]"
             placeholder="Confirm Password"
           />
           <Message
@@ -245,6 +272,7 @@
             severity="error"
             size="small"
             variant="simple"
+            class="!mb-6"
             >{{ $form.confirmPassword.error?.message }}</Message
           >
           <div class="flex flex-col items-center justify-center">
@@ -395,16 +423,6 @@
   };
 
   const handleLogin = async () => {
-    // if (!email.value || !password.value) {
-    //   toast.add({
-    //     severity: "error",
-    //     summary: "Missing Information",
-    //     detail: "Please provide both email and password.",
-    //     life: 3000,
-    //   });
-    //   return;
-    // }
-
     try {
       await authStore.login(initialValues.email, initialValues.password);
 
@@ -423,6 +441,7 @@
     } catch (error) {
       initialValues.email = "";
       initialValues.password = "";
+      console.error(error);
     }
   };
 
@@ -481,12 +500,7 @@
         life: 3000,
       });
     } catch (error) {
-      toast.add({
-        severity: "error",
-        summary: "Registration Failed",
-        detail: error.response?.data?.message || "Could not create account.",
-        life: 3000,
-      });
+      console.error(error);
     }
   };
 
