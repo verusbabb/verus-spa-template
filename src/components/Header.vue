@@ -87,11 +87,16 @@
               variant="text"
             />
 
-            <Dialog v-model:visible="visible" class="!bg-gray-200" modal>
+            <Dialog
+              v-model:visible="visible"
+              @show="selectedSchema = 'userLoginSchema'"
+              class="!bg-gray-200"
+              modal
+            >
               <Form
                 v-slot="$form"
-                :initialValues="initialValuesLogin"
-                :resolver="resolverLogin"
+                :initialValues="initialValues"
+                :resolver="resolver"
                 @submit="handleLogin"
               >
                 <div
@@ -101,7 +106,8 @@
                     Welcome
                   </div>
                   <InputText
-                    v-model="email"
+                    v-model="initialValues.email"
+                    name="email"
                     type="text"
                     class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
                     placeholder="Email"
@@ -115,7 +121,8 @@
                   >
 
                   <InputText
-                    v-model="password"
+                    v-model="initialValues.password"
+                    name="password"
                     type="password"
                     class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
                     placeholder="Password"
@@ -137,7 +144,7 @@
                       NEW USER?
                     </div>
                     <Button
-                      @click="handleCreateAccount"
+                      @click="openCreateAccountModal"
                       variant="text"
                       severity="secondary"
                     >
@@ -152,12 +159,17 @@
       </Menubar>
     </div>
 
-    <Dialog v-model:visible="createAccountVisible" class="!bg-gray-200" modal>
+    <Dialog
+      v-model:visible="createAccountVisible"
+      @show="selectedSchema = 'userCreateAccountSchema'"
+      class="!bg-gray-200"
+      modal
+    >
       <Form
         v-slot="$form"
-        :initialValues="initialValuesCreateAccount"
-        :resolver="resolverCreateAccount"
-        @submit="submitCreateAccount"
+        :initialValues="initialValues"
+        :resolver="resolver"
+        @submit="handleCreateAccount"
       >
         <div
           class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
@@ -166,7 +178,8 @@
             Create Account
           </div>
           <InputText
-            v-model="newFirstName"
+            v-model="initialValues.newFirstName"
+            name="newFirstName"
             type="text"
             class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
             placeholder="First Name"
@@ -179,7 +192,8 @@
             >{{ $form.newFirstName.error?.message }}</Message
           >
           <InputText
-            v-model="newLastName"
+            v-model="initialValues.newLastName"
+            name="newLastName"
             type="text"
             class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
             placeholder="Last Name"
@@ -192,7 +206,8 @@
             >{{ $form.newLastName.error?.message }}</Message
           >
           <InputText
-            v-model="newEmail"
+            v-model="initialValues.newEmail"
+            name="newEmail"
             type="email"
             class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
             placeholder="Email"
@@ -205,7 +220,8 @@
             >{{ $form.newEmail.error?.message }}</Message
           >
           <InputText
-            v-model="newPassword"
+            v-model="initialValues.newPassword"
+            name="newPassword"
             type="password"
             class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
             placeholder="Password"
@@ -218,7 +234,8 @@
             >{{ $form.newPassword.error?.message }}</Message
           >
           <InputText
-            v-model="confirmPassword"
+            v-model="initialValues.confirmPassword"
+            name="confirmPassword"
             type="password"
             class="!appearance-none placeholder:!text-primary-contrast/40 !p-4 !w-full !outline-0 !text-xl !block !mb-6 !bg-white/10 !text-primary-contrast/70 !rounded-full"
             placeholder="Confirm Password"
@@ -231,11 +248,7 @@
             >{{ $form.confirmPassword.error?.message }}</Message
           >
           <div class="flex flex-col items-center justify-center">
-            <Button
-              @click="submitCreateAccount"
-              variant="text"
-              severity="secondary"
-            >
+            <Button type="submit" variant="text" severity="secondary">
               Create Account
             </Button>
             <Button
@@ -254,7 +267,7 @@
 </template>
 
 <script setup>
-  import { ref, reactive } from "vue";
+  import { ref, reactive, watch } from "vue";
   import {
     Badge,
     Menubar,
@@ -264,12 +277,13 @@
     Message,
     Toast,
   } from "primevue";
-  // import Toast from "primevue/toast";
   import { Form } from "@primevue/forms";
   import { useToast } from "primevue/usetoast";
   import { useRouter } from "vue-router";
   import { useAuthStore } from "../store/auth";
   import { storeToRefs } from "pinia";
+  import { zodResolver } from "@primevue/forms/resolvers/zod";
+  import { z } from "zod";
 
   const visible = ref(false);
 
@@ -285,17 +299,7 @@
   const newFirstName = ref("");
   const newLastName = ref("");
   const role = "user";
-  const loginSchema = ref("userLogin");
-
-  // const resolver = ref(
-  //   zodResolver(
-  //     z.object({
-  //       username: z
-  //         .string()
-  //         .min(1, { message: "Username is required via Zod." }),
-  //     }),
-  //   ),
-  // );
+  const selectedSchema = ref("userLoginSchema");
 
   const items = ref([
     {
@@ -306,17 +310,14 @@
         {
           label: "Some Project",
           icon: "pi pi-video",
-          // shortcut: "⌘+S",
         },
         {
           label: "Another Project",
           icon: "pi pi-video",
-          // shortcut: "⌘+B",
         },
         {
           label: "Yet Another",
           icon: "pi pi-video",
-          // shortcut: "⌘+U",
         },
       ],
     },
@@ -328,27 +329,9 @@
 
   const toast = useToast();
 
-  const initialValuesLogin = reactive({
+  const initialValues = reactive({
     email: "",
     password: "",
-  });
-
-  const resolverLogin = ({ values }) => {
-    const errors = {};
-
-    if (!values.email) {
-      errors.email = [{ message: "Email is required." }];
-    }
-    if (!values.password) {
-      errors.password = [{ message: "Password is required." }];
-    }
-
-    return {
-      errors,
-    };
-  };
-
-  const initialValuesCreateAccount = reactive({
     newEmail: "",
     newPassword: "",
     confirmPassword: "",
@@ -356,51 +339,79 @@
     newLastName: "",
   });
 
-  const resolverCreateAccount = ({ values }) => {
-    const errors = {};
+  const resolver = ref(
+    zodResolver(
+      z.object({
+        email: z.string().email({ message: "Email is required via Zod." }),
+        password: z
+          .string()
+          .min(8, { message: "Password is required via Zod." }),
+      }),
+    ),
+  );
 
-    if (!values.newFirstName?.trim()) {
-      errors.newFirstName = { message: "First name is required." };
-    }
-    if (!values.newLastName?.trim()) {
-      errors.newLastName = { message: "Last name is required." };
-    }
-    if (!values.newEmail?.trim()) {
-      errors.newEmail = { message: "Email is required." };
-    }
-    if (!values.newPassword?.trim()) {
-      errors.newPassword = { message: "Password is required." };
-    }
-    if (!values.confirmPassword?.trim()) {
-      errors.confirmPassword = { message: "Confirm password is required." };
-    } else if (values.confirmPassword !== values.newPassword) {
-      errors.confirmPassword = { message: "Passwords do not match." };
-    }
+  watch(selectedSchema, (newSchema) => {
+    changeResolver(newSchema);
+  });
 
-    return {
-      errors,
-      values,
-    };
+  const changeResolver = (schema) => {
+    if (schema === "userLoginSchema") {
+      console.log("setting schema to login");
+      resolver.value = zodResolver(
+        z.object({
+          email: z.string().email({ message: "Email is required via Zod." }),
+          password: z
+            .string()
+            .min(8, { message: "Password is required via Zod." }),
+        }),
+      );
+    } else if (schema === "userCreateAccountSchema") {
+      console.log("setting schema to create account");
+      resolver.value = zodResolver(
+        z
+          .object({
+            newEmail: z
+              .string()
+              .email({ message: "New Email is required via Zod." }),
+            newPassword: z
+              .string()
+              .min(8, { message: "Password is required via Zod." }),
+            confirmPassword: z
+              .string()
+              .min(8, { message: "Confirm password is required via Zod." }),
+            newFirstName: z
+              .string()
+              .min(1, { message: "First name is required via Zod." }),
+            newLastName: z
+              .string()
+              .min(1, { message: "Last name is required via Zod." }),
+          })
+          .refine((data) => data.newPassword === data.confirmPassword, {
+            message: "Passwords don't match",
+            path: ["confirmPassword"],
+          }),
+      );
+    }
   };
 
   const handleLogin = async () => {
-    if (!email.value || !password.value) {
-      toast.add({
-        severity: "error",
-        summary: "Missing Information",
-        detail: "Please provide both email and password.",
-        life: 3000,
-      });
-      return;
-    }
+    // if (!email.value || !password.value) {
+    //   toast.add({
+    //     severity: "error",
+    //     summary: "Missing Information",
+    //     detail: "Please provide both email and password.",
+    //     life: 3000,
+    //   });
+    //   return;
+    // }
 
     try {
-      await authStore.login(email.value, password.value);
+      await authStore.login(initialValues.email, initialValues.password);
 
       if (isAuthenticated.value) {
         visible.value = false;
-        email.value = "";
-        password.value = "";
+        initialValues.email = "";
+        initialValues.password = "";
         router.push("/");
         toast.add({
           severity: "success",
@@ -410,14 +421,8 @@
         });
       }
     } catch (error) {
-      email.value = "";
-      password.value = "";
-      toast.add({
-        severity: "error",
-        summary: "Login Failed",
-        detail: error.response?.data?.message || "Invalid email or password.",
-        life: 3000,
-      });
+      initialValues.email = "";
+      initialValues.password = "";
     }
   };
 
@@ -433,52 +438,42 @@
     router.push("/");
   };
 
-  const handleCreateAccount = () => {
+  const openCreateAccountModal = () => {
     visible.value = false;
     createAccountVisible.value = true;
   };
 
-  const submitCreateAccount = async () => {
-    if (
-      !newEmail.value ||
-      !newPassword.value ||
-      !confirmPassword.value ||
-      !newFirstName.value ||
-      !newLastName.value
-    ) {
-      toast.add({
-        severity: "error",
-        summary: "Missing Information",
-        detail: "Please fill in all fields.",
-        life: 3000,
-      });
-      return;
-    }
-
-    if (newPassword.value !== confirmPassword.value) {
-      toast.add({
-        severity: "error",
-        summary: "Password Mismatch",
-        detail: "Passwords do not match.",
-        life: 3000,
-      });
-      return;
-    }
+  const handleCreateAccount = async () => {
+    // if (
+    //   !newEmail.value ||
+    //   !newPassword.value ||
+    //   !confirmPassword.value ||
+    //   !newFirstName.value ||
+    //   !newLastName.value
+    // ) {
+    //   toast.add({
+    //     severity: "error",
+    //     summary: "Missing Information",
+    //     detail: "Please fill in all fields.",
+    //     life: 3000,
+    //   });
+    //   return;
+    // }
 
     try {
       await authStore.register(
-        newEmail.value,
-        newPassword.value,
-        newFirstName.value,
-        newLastName.value,
+        initialValues.newEmail,
+        initialValues.newPassword,
+        initialValues.newFirstName,
+        initialValues.newLastName,
         role,
       );
       createAccountVisible.value = false;
-      newEmail.value = "";
-      newPassword.value = "";
-      confirmPassword.value = "";
-      newFirstName.value = "";
-      newLastName.value = "";
+      initialValues.newEmail = "";
+      initialValues.newPassword = "";
+      initialValues.confirmPassword = "";
+      initialValues.newFirstName = "";
+      initialValues.newLastName = "";
       toast.add({
         severity: "success",
         summary: "Account Created",
