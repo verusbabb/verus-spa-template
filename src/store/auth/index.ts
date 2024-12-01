@@ -38,23 +38,41 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
+    async register(
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+    ) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8110/api/users/register",
+          { email, password, firstName, lastName, role: "user" },
+        );
+        return response.data; // Returns the new user object
+      } catch (error) {
+        throw error;
+      }
+    },
+
     async login(email: string, password: string) {
       try {
         const response = await axios.post(
           "http://localhost:8110/api/auth/login",
           { email, password },
         );
-        const { accessToken, refreshToken } = response.data;
+        const { accessToken, refreshToken, user } = response.data;
+        console.log("user", user);
 
-        const decodedUser = jwtDecode<User>(accessToken);
-        console.log(decodedUser);
+        // const decodedUser = jwtDecode<User>(accessToken);
 
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
 
-        this.user = decodedUser;
+        this.user = user;
         this.token = accessToken;
         this.isAuthenticated = true;
+        console.log("user", this.user);
       } catch (error) {
         this.logout();
         throw error;
