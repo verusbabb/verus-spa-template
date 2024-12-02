@@ -372,10 +372,8 @@
   const resolver = ref(
     zodResolver(
       z.object({
-        email: z.string().email({ message: "Email is required via Zod." }),
-        password: z
-          .string()
-          .min(8, { message: "Password is required via Zod." }),
+        email: z.string().email({ message: "Email is required." }),
+        password: z.string().min(8, { message: "Password is required." }),
       }),
     ),
   );
@@ -389,10 +387,10 @@
       console.log("setting schema to login");
       resolver.value = zodResolver(
         z.object({
-          email: z.string().email({ message: "Email is required via Zod." }),
-          password: z
-            .string()
-            .min(8, { message: "Password is required via Zod." }),
+          email: z.string().email({ message: "Email is required." }),
+          password: z.string().min(8, {
+            message: "Password is required.",
+          }),
         }),
       );
     } else if (schema === "userCreateAccountSchema") {
@@ -400,21 +398,19 @@
       resolver.value = zodResolver(
         z
           .object({
-            newEmail: z
-              .string()
-              .email({ message: "New Email is required via Zod." }),
-            newPassword: z
-              .string()
-              .min(8, { message: "Password is required via Zod." }),
+            newEmail: z.string().email({ message: "Email is required." }),
+            newPassword: z.string().min(8, {
+              message: "Password of at least 8 characters is required.",
+            }),
             confirmPassword: z
               .string()
-              .min(8, { message: "Confirm password is required via Zod." }),
+              .min(8, { message: "Password confirmation is required." }),
             newFirstName: z
               .string()
-              .min(1, { message: "First name is required via Zod." }),
+              .min(1, { message: "First name is required." }),
             newLastName: z
               .string()
-              .min(1, { message: "Last name is required via Zod." }),
+              .min(1, { message: "Last name is required." }),
           })
           .refine((data) => data.newPassword === data.confirmPassword, {
             message: "Passwords don't match",
@@ -495,6 +491,7 @@
       initialValues.confirmPassword = "";
       initialValues.newFirstName = "";
       initialValues.newLastName = "";
+      visible.value = true;
       toast.add({
         severity: "success",
         summary: "Account Created",
