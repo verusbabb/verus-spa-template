@@ -113,6 +113,7 @@ export const useAuthStore = defineStore("auth", {
       if (token && isTokenValid(token)) {
         this.isAuthenticated = true;
         this.token = token;
+        // TODO: fetch user from backend and set it to this.user
         this.user = jwtDecode<User>(token);
       } else {
         this.logout();

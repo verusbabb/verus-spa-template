@@ -2,9 +2,13 @@
   import Header from "./components/Header.vue";
   import { RouterView } from "vue-router";
   import { useAuthStore } from "./store/auth";
+  import { onMounted } from "vue";
 
   const authStore = useAuthStore();
-  authStore.init();
+
+  onMounted(async () => {
+    await authStore.init();
+  });
 </script>
 
 <template>

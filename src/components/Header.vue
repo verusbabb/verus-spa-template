@@ -69,29 +69,31 @@
 
         <template #end>
           <div class="flex items-center gap-2">
-            <div v-if="authStore.user" class="text-indigo-500 font-bold">
+            <div v-if="authStore.user" class="text-indigo-500 font-bold mr-4">
               Welcome, {{ authStore.user.firstName }}
             </div>
             <Button
               v-if="!isAuthenticated"
               label="Login"
               @click="visible = true"
-              severity="secondary"
-              variant="text"
+              severity="info"
             />
             <Button
               v-if="isAuthenticated"
               label="Logout"
               @click="handleLogout"
-              severity="secondary"
-              variant="text"
+              severity="info"
             />
 
             <Dialog
               v-model:visible="visible"
               @show="selectedSchema = 'userLoginSchema'"
               @hide="clearLoginValues"
-              class="!bg-gray-200"
+              :pt="{
+                root: { class: 'dark:bg-surface-900' },
+                content: { class: 'dark:bg-surface-900' },
+                mask: { class: 'dark:bg-surface-900/70' },
+              }"
               modal
             >
               <Form
@@ -101,9 +103,11 @@
                 @submit="handleLogin"
               >
                 <div
-                  class="p-12 shadow text-center bg-gray-100 border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
+                  class="p-12 shadow text-center bg-surface-0 dark:bg-surface-900 border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
                 >
-                  <div class="text-4xl font-medium mb-12 mt-4 text-gray-900">
+                  <div
+                    class="text-4xl font-medium mb-12 mt-4 text-surface-900 dark:text-surface-0"
+                  >
                     Welcome
                   </div>
                   <InputText
@@ -144,19 +148,13 @@
                     >{{ $form.password.error?.message }}</Message
                   >
                   <div class="flex flex-col items-center justify-center">
-                    <Button type="submit" variant="text" severity="secondary">
-                      Sign In
-                    </Button>
+                    <Button type="submit" severity="info"> Sign In </Button>
                     <div
-                      class="text-md text-gray-900 font-bold dark:text-surface-200 mt-4"
+                      class="text-md font-medium mb-2 mt-12 text-surface-900 dark:text-surface-0"
                     >
                       NEW USER?
                     </div>
-                    <Button
-                      @click="openCreateAccountModal"
-                      variant="text"
-                      severity="secondary"
-                    >
+                    <Button @click="openCreateAccountModal" severity="info">
                       Create Account
                     </Button>
                   </div>
@@ -172,7 +170,11 @@
       v-model:visible="createAccountVisible"
       @show="selectedSchema = 'userCreateAccountSchema'"
       @hide="clearCreateAccountValues"
-      class="!bg-gray-200"
+      :pt="{
+        root: { class: 'dark:bg-surface-900' },
+        content: { class: 'dark:bg-surface-900' },
+        mask: { class: 'dark:bg-surface-900/70' },
+      }"
       modal
     >
       <Form
@@ -182,9 +184,11 @@
         @submit="handleCreateAccount"
       >
         <div
-          class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl"
+          class="p-12 shadow text-center border border-gray-500 lg:w-[30rem] backdrop-blur-md rounded-xl bg-surface-0 dark:bg-surface-900"
         >
-          <div class="text-4xl font-medium mb-12 mt-4 text-gray-900">
+          <div
+            class="text-4xl font-medium mb-12 mt-4 text-surface-900 dark:text-surface-0"
+          >
             Create Account
           </div>
           <InputText
@@ -278,13 +282,10 @@
             >{{ $form.confirmPassword.error?.message }}</Message
           >
           <div class="flex flex-col items-center justify-center">
-            <Button type="submit" variant="text" severity="secondary">
-              Create Account
-            </Button>
+            <Button type="submit" severity="info"> Create Account </Button>
             <Button
               @click="createAccountVisible = false"
-              variant="text"
-              severity="secondary"
+              severity="info"
               class="mt-2"
             >
               Cancel
